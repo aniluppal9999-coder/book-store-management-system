@@ -1,0 +1,33 @@
+CREATE DATABASE IF NOT EXISTS bookstore_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE bookstore_db;
+CREATE TABLE IF NOT EXISTS Books (
+  book_id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(200) NOT NULL,
+  author VARCHAR(150) NOT NULL,
+  isbn VARCHAR(20) UNIQUE,
+  category VARCHAR(100),
+  price DECIMAL(10,2) NOT NULL,
+  quantity INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CHECK (price >= 0), CHECK (quantity >= 0)
+);
+CREATE TABLE IF NOT EXISTS Sales (
+  sale_id INT AUTO_INCREMENT PRIMARY KEY,
+  sale_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  subtotal DECIMAL(10,2) NOT NULL DEFAULT 0,
+  discount DECIMAL(10,2) NOT NULL DEFAULT 0,
+  tax DECIMAL(10,2) NOT NULL DEFAULT 0,
+  total_amount DECIMAL(10,2) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS Sale_Details (
+  detail_id INT AUTO_INCREMENT PRIMARY KEY,
+  sale_id INT NOT NULL,
+  book_id INT NOT NULL,
+  title_at_sale VARCHAR(200) NOT NULL,
+  quantity INT NOT NULL,
+  unit_price DECIMAL(10,2) NOT NULL,
+  line_total DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (sale_id) REFERENCES Sales(sale_id),
+  FOREIGN KEY (book_id) REFERENCES Books(book_id),
+  CHECK (quantity > 0), CHECK (unit_price >= 0)
+);
